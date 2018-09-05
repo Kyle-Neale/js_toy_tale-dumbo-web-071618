@@ -34,22 +34,22 @@ document.addEventListener("DOMContentLoaded", () => {
     toyCard.append(toyName, toyImage, toyLikes, toyBttn);
 
     toyCollect.appendChild(toyCard);
-  }
-
-  ToyAdapter.getToys()
-  .then(data => {
-    data.forEach(displayToy);
-    const likeButtons = toyCollect.querySelectorAll("button");
-    likeButtons.forEach(button => button.addEventListener("click", (event) => {
+    toyBttn.addEventListener("click", (event) => {
       let toyDiv = event.target.parentNode;
       let toyId = toyDiv.dataset.id;
       let likes = toyDiv.querySelector("p")
       let newLikes = parseInt(likes.innerText)
       likes.innerText = ++newLikes
       ToyAdapter.updateLikes(toyId, {likes: newLikes})
-    }))
+    })
+  }
+
+  ToyAdapter.getToys()
+  .then(data => {
+    data.forEach(displayToy);
+
   })
-  // OR HERE!
+
   toyForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const toyNameValue = toyForm.querySelector("#toy-name-input").value;
@@ -59,9 +59,10 @@ document.addEventListener("DOMContentLoaded", () => {
       "image": toyURLValue,
       "likes": 0
     };
-    // console.log(newToy);
-    displayToy(newToy);
-    ToyAdapter.createToy(newToy);
+
+    ToyAdapter.createToy(newToy)
+    .then(newToyObj => displayToy(newToyObj))
+    
   })
 
 })
